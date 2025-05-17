@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Definición del modelo Usuario
+// Tabla usuario
 model Usuario {
   id          Int       @id @default(autoincrement())
   nombre      String    @db.VarChar(100)
@@ -18,4 +18,18 @@ model Usuario {
   password    String    @db.VarChar(255)
   estado      Boolean   @default(true)
   createdAt   DateTime  @default(now())
+}
+
+// Tabla repuestos
+model Repuesto {
+  id          Int      @id @default(autoincrement())
+  codigo      String   @unique
+  nombre      String
+  precio      Float
+  cantidad    Int
+  proveedor   String?
+  categoria   String?
+  ubicacion   String?
+  estado      Boolean  @default(true)
+  createdAt   DateTime @default(now())
 }

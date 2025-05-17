@@ -8,14 +8,19 @@ import {
   loginUser 
 } from '../controllers/userController.js';
 
-const router = new Router();
+const routerUsser = new Router();
+
+// Rutas de usuariio = Registrar, login
 
 // Rutas de usuario
-router.get('/users', getAllUsers);
-router.get('/users/:id', getUserById);
-router.post('/users', createUser);
-router.put('/users/:id', updateUser);
-router.delete('/users/:id', deleteUser);
-router.post('/login', loginUser);
+routerUsser.get('/users', getAllUsers);
+routerUsser.post('/users', createUser);
+routerUsser.post('/login', loginUser);
 
-export default router;
+// Routas de prueba
+routerUsser.put('/users/:id', updateUser);
+routerUsser.delete('/users/:id', deleteUser);
+routerUsser.get('/users/:id', getUserById);
+
+
+export default routerUsser;
