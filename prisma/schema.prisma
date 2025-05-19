@@ -13,10 +13,11 @@ datasource db {
 // Tabla usuario
 model Usuario {
   id          Int       @id @default(autoincrement())
-  nombre      String    @db.VarChar(100)
-  email       String    @unique @db.VarChar(100)
-  password    String    @db.VarChar(255)
+  nombre      String
+  email       String    @unique
+  password    String
   estado      Boolean   @default(true)
+  rol         String    @default("user") // "admin" o "user"
   createdAt   DateTime  @default(now())
 }
 
