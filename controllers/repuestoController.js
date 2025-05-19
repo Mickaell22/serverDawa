@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-
+Hola
 // todos losd respuestos
 export const getAllRepuestos = async (req, res) => {
   try {
