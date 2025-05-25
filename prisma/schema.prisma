@@ -10,18 +10,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Tabla usuario
+// Tabla usuarios
 model Usuario {
-  id          Int       @id @default(autoincrement())
-  nombre      String
-  email       String    @unique
-  password    String
-  estado      Boolean   @default(true)
-  rol         String    @default("user") // "admin" o "user"
-  createdAt   DateTime  @default(now())
+  id        Int       @id @default(autoincrement())
+  nombre    String
+  email     String    @unique
+  password  String
+  estado    Boolean   @default(true)
+  rol       String    @default("user")
+  createdAt DateTime  @default(now())
 }
 
-// Tabla repuestos
+// Tabla repuestos (sin modificar)
 model Repuesto {
   id          Int      @id @default(autoincrement())
   codigo      String   @unique
@@ -29,8 +29,45 @@ model Repuesto {
   precio      Float
   cantidad    Int
   proveedor   String?
-  categoria   String?
+  categoria   String?  // Aquí se indica si es "producto" o "servicio"
   ubicacion   String?
   estado      Boolean  @default(true)
   createdAt   DateTime @default(now())
+
+  productosOrdenados ProductoOrden[]
+}
+
+// Tabla orden (sin usuario)
+model Orden {
+  id_order             Int       @id @default(autoincrement())
+  emitida      DateTime  @default(now())
+  total          Float
+  aprobado         Boolean   @default(true)
+
+  // Datos del cliente ingresados directamente
+
+  cl_nombre  String
+  cl_apellido String
+  cl_cedula  String
+  cl_telefono String
+  cl_ubicacion String
+
+  productosOrdenados ProductoOrden[]
+}
+
+// Tabla detalle de orden
+model ProductoOrden {
+  id             Int       @id @default(autoincrement())
+
+  ordenId        Int
+  orden          Orden     @relation(fields: [ordenId], references: [id_order])
+
+  repuestoId     Int
+  repuesto       Repuesto  @relation(fields: [repuestoId], references: [id])
+
+///rompe con la segunda normalizaicon pero  mantiene aunque el producto cambie después
+  precioUnitario Float
+  nombreProducto String
+  cantidad       Int
+  montoTotal     Float
 }

@@ -4,6 +4,7 @@ import 'dotenv/config';
 import config from './config/env.js';
 import userRoutes from './routes/userRoutes.js';
 import repuestoRoutes from './routes/repuestoRoutes.js';
+import routes_orders from './routes/ordersRoutes.js'; 
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 // Rutas
 app.use('/api', userRoutes);
 app.use('/api', repuestoRoutes); 
+app.use('/api', routes_orders); 
 
 // Ruta de prueba
 app.get('/', (req, res) => {
