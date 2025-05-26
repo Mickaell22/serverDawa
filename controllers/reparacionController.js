@@ -84,6 +84,37 @@ export const getRepacionesPorEmpleadoId = async (req, res) => {
   }
 };
 
+export const getReparacionPorId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+
+    const reparacion = await prisma.reparacion.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    if (!reparacion) {
+      return res.status(404).json({
+        success: false,
+        message: "Reparacion no encontrada",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: reparacion,
+    });
+  } catch (error) {
+    console.error("Error al obtener la reparacion: ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error en el servidor",
+    });
+  }
+};
+
 export const crearReparacion = async (req, res) => {
   try {
     //estado es automatico al inicio
@@ -163,7 +194,7 @@ export const crearReparacion = async (req, res) => {
 
 export const actualizarEstadoReparacion = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id, estado } = req.params;
 
     const reparacionExistente = await prisma.reparacion.findUnique({
       where: {
@@ -178,58 +209,39 @@ export const actualizarEstadoReparacion = async (req, res) => {
       });
     }
 
-    // Verificar que no esté ya aprobada
-    if (reparacionExistente.aprobado) {
+    if (reparacionExistente.estado === "TERMINADO") {
       return res.status(400).json({
         success: false,
-        message: "Esta orden ya ha sido aprobada",
+        message: "Esta reparacion ya ha sido terminada",
       });
     }
 
-    const detalles = await prisma.productoOrden.findMany({
-      where: { ordenId: parseInt(id) },
-    });
-
-    for (const detalle of detalles) {
-      const producto = await prisma.repuesto.findUnique({
-        where: { id: detalle.repuestoId },
-      });
-
-      if (!producto || producto.stock < detalle.cantidad) {
-        return res.status(400).json({
-          success: false,
-          message: `Stock insuficiente para el producto "${producto?.nombre}". Disponible: ${producto?.stock}, necesario: ${detalle.cantidad}`,
-        });
-      }
-    }
-
-    for (const detalle of detalles) {
-      await prisma.repuesto.update({
-        where: { id: detalle.repuestoId },
-        data: {
-          cantidad: {
-            decrement: detalle.cantidad,
-          },
-        },
+    const ESTADOS_VALIDOS = ["EN_PROCESO", "TERMINADO", "CANCELADO"];
+    if (!ESTADOS_VALIDOS.includes(estado)) {
+      return res.status(400).json({
+        success: false,
+        message: "Estado inválido",
       });
     }
 
-    // Aprobar orden
-    await prisma.orden.update({
-      where: {
-        id_order: parseInt(id),
-      },
-      data: {
-        aprobado: true,
-      },
-    });
+    if (estado === "TERMINADO") {
+      await prisma.reparacion.update({
+        where: { id: parseInt(id) },
+        data: { estado: estado, fechaEntregaReal: new Date() },
+      });
+    } else {
+      await prisma.reparacion.update({
+        where: { id: parseInt(id) },
+        data: { estado: estado },
+      });
+    }
 
     return res.status(200).json({
       success: true,
-      message: "Orden aprobada correctamente y stock actualizado",
+      message: `La reparación ha sido actualizada al estado: ${estado}`,
     });
   } catch (error) {
-    console.error("Error al aprobar la orden:", error);
+    console.error("Error al cambiar el estado:", error);
     return res.status(500).json({
       success: false,
       message: "Error en el servidor",
