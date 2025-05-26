@@ -12,62 +12,103 @@ datasource db {
 
 // Tabla usuarios
 model Usuario {
-  id        Int       @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   nombre    String
-  email     String    @unique
+  email     String   @unique
   password  String
-  estado    Boolean   @default(true)
-  rol       String    @default("user")
-  createdAt DateTime  @default(now())
+  estado    Boolean  @default(true)
+  rol       String   @default("user")
+  createdAt DateTime @default(now())
 }
 
 // Tabla repuestos (sin modificar)
 model Repuesto {
-  id          Int      @id @default(autoincrement())
-  codigo      String   @unique
-  nombre      String
-  precio      Float
-  cantidad    Int
-  proveedor   String?
-  categoria   String?  // Aquí se indica si es "producto" o "servicio"
-  ubicacion   String?
-  estado      Boolean  @default(true)
-  createdAt   DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  codigo    String   @unique
+  nombre    String
+  precio    Float
+  cantidad  Int
+  proveedor String?
+  categoria String? // Aquí se indica si es "producto" o "servicio"
+  ubicacion String?
+  estado    Boolean  @default(true)
+  createdAt DateTime @default(now())
 
   productosOrdenados ProductoOrden[]
 }
 
 // Tabla orden (sin usuario)
 model Orden {
-  id_order             Int       @id @default(autoincrement())
-  emitida      DateTime  @default(now())
-  total          Float
-  aprobado         Boolean   @default(true)
+  id_order Int      @id @default(autoincrement())
+  emitida  DateTime @default(now())
+  total    Float
+  aprobado Boolean  @default(true)
 
   // Datos del cliente ingresados directamente
 
-  cl_nombre  String
-  cl_apellido String
-  cl_cedula  String
-  cl_telefono String
+  cl_nombre    String
+  cl_apellido  String
+  cl_cedula    String
+  cl_telefono  String
   cl_ubicacion String
 
   productosOrdenados ProductoOrden[]
+
+  // Relación con Reparacion (una orden puede estar asociada a una reparación)
+  reparacion Reparacion?
 }
 
 // Tabla detalle de orden
 model ProductoOrden {
-  id             Int       @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  ordenId        Int
-  orden          Orden     @relation(fields: [ordenId], references: [id_order])
+  ordenId Int
+  orden   Orden @relation(fields: [ordenId], references: [id_order])
 
-  repuestoId     Int
-  repuesto       Repuesto  @relation(fields: [repuestoId], references: [id])
+  repuestoId Int
+  repuesto   Repuesto @relation(fields: [repuestoId], references: [id])
 
-///rompe con la segunda normalizaicon pero  mantiene aunque el producto cambie después
+  ///rompe con la segunda normalizaicon pero  mantiene aunque el producto cambie después
   precioUnitario Float
   nombreProducto String
   cantidad       Int
   montoTotal     Float
+}
+
+model Tecnico {
+  id           Int     @id @default(autoincrement())
+  nombre       String
+  cedula       String
+  telefono     String
+  especialidad String?
+  estado String
+
+  reparaciones Reparacion[]
+}
+
+model Reparacion {
+  id                   Int                @id @default(autoincrement())
+  clienteNombre        String
+  clienteCedula        String
+  clienteTelefono      String
+  equipo               String
+  problemaReportado    String
+  fechaIngreso         DateTime           @default(now())
+  estado               EstadoReparacion   @default(EN_PROCESO)
+
+  tecnicoId            Int
+  tecnicoAsignado      Tecnico           @relation(fields: [tecnicoId], references: [id])
+
+  fechaEntregaEstimada DateTime?
+  fechaEntregaReal     DateTime?
+
+  ordenId              Int               @unique
+  orden                Orden             @relation(fields: [ordenId], references: [id_order])
+}
+
+enum EstadoReparacion {
+  EN_PROCESO
+  ESPERANDO_REPUESTO
+  TERMINADO
+  ENTREGADO
 }

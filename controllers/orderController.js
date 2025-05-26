@@ -211,7 +211,7 @@ export const createOrder = async (req, res) => {
       data: newOrder,
     });
   } catch (error) {
-    console.error("Error al crear repuesto: ", error);
+    console.error("Error al crear la orden: ", error);
     return res.status(500).json({
       success: false,
       message: "Error en el servidor",

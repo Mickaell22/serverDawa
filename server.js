@@ -5,6 +5,7 @@ import config from './config/env.js';
 import userRoutes from './routes/userRoutes.js';
 import repuestoRoutes from './routes/repuestoRoutes.js';
 import routes_orders from './routes/ordersRoutes.js'; 
+import repacionesRoutes from './routes/reparacionRoutes.js';
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 app.use('/api', userRoutes);
 app.use('/api', repuestoRoutes); 
 app.use('/api', routes_orders); 
+app.use('/api', repacionesRoutes); 
 
 // Ruta de prueba
 app.get('/', (req, res) => {
