@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {getTodosTecnicos, getTecnicoId, createTecnico} from "../controllers/tecnicoController";
+import {getTodosTecnicos, getTecnicoId, createTecnico} from "../controllers/tecnicoController.js";
 
 //inicio el router
 const tecnicosRoutes = new Router();
