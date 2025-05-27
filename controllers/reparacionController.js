@@ -36,7 +36,7 @@ export const getRepacionesPorCI = async (req, res) => {
 
     const reparacionesCI = await prisma.reparacion.findMany({
       where: {
-        clienteCedula: parseInt(ci),
+        clienteCedula: ci,
       },
     });
 
