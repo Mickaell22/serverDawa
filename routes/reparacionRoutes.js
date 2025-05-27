@@ -1,4 +1,4 @@
-import Router from "express";
+import { Router } from "express";
 import {actualizarEstadoReparacion, crearReparacion, getRepacionesPorCI, getRepacionesPorEmpleadoId, getReparacionPorId, getTodasRepaciones} from "../controllers/reparacionController.js";
 
 //inicio el router

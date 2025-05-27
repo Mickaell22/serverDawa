@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes.js';
 import repuestoRoutes from './routes/repuestoRoutes.js';
 import routes_orders from './routes/ordersRoutes.js'; 
 import repacionesRoutes from './routes/reparacionRoutes.js';
+import tecnicosRoutes from './routes/tecnicoRoutes.js';
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use('/api', userRoutes);
 app.use('/api', repuestoRoutes); 
 app.use('/api', routes_orders); 
 app.use('/api', repacionesRoutes); 
+app.use('/api', tecnicosRoutes); 
 
 // Ruta de prueba
 app.get('/', (req, res) => {

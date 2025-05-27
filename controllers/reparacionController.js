@@ -25,7 +25,14 @@ export const getTodasRepaciones = async (req, res) => {
 export const getRepacionesPorCI = async (req, res) => {
   try {
     const { ci } = req.params;
-    console.log(ci);
+
+    // Verificar que la cédula tenga 10 caracteres
+    if (ci.length !== 10) {
+      return res.status(400).json({
+        success: false,
+        message: "La cédula debe tener exactamente 10 números",
+      });
+    }
 
     const reparacionesCI = await prisma.reparacion.findMany({
       where: {
@@ -36,7 +43,7 @@ export const getRepacionesPorCI = async (req, res) => {
     if (reparacionesCI.length === 0) {
       return res.status(404).json({
         success: false,
-        message: `No se encontraron coincidencias con su búsqueda por el número de cédula: ${ci}`,
+        message: `No se encontraron reparaciones con la cédula: ${ci}`,
       });
     }
 
@@ -45,7 +52,7 @@ export const getRepacionesPorCI = async (req, res) => {
       data: reparacionesCI,
     });
   } catch (error) {
-    console.error("Error al obtener las repaciones: ", error);
+    console.error("Error al obtener las reparaciones por CI:", error);
     return res.status(500).json({
       success: false,
       message: "Error en el servidor",
@@ -117,7 +124,6 @@ export const getReparacionPorId = async (req, res) => {
 
 export const crearReparacion = async (req, res) => {
   try {
-    //estado es automatico al inicio
     const {
       cl_nombre,
       cl_cedula,
@@ -129,9 +135,17 @@ export const crearReparacion = async (req, res) => {
       ordenId,
     } = req.body;
 
+    // Validar que la cédula tenga 10 dígitos
+    if (!cl_cedula || cl_cedula.length !== 10) {
+      return res.status(400).json({
+        success: false,
+        message: "La cédula debe tener exactamente 10 números",
+      });
+    }
+
+    // Verificar que no falte ningún campo obligatorio
     if (
       !cl_nombre ||
-      !cl_cedula ||
       !cl_telefono ||
       !equipo ||
       !problema ||
@@ -140,7 +154,7 @@ export const crearReparacion = async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: "Todos los campos obligatorios",
+        message: "Faltan campos obligatorios",
       });
     }
 
@@ -148,18 +162,20 @@ export const crearReparacion = async (req, res) => {
       where: { id: tecnicoId },
     });
     if (!tecnicoExiste) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Técnico no encontrado" });
+      return res.status(404).json({
+        success: false,
+        message: "Técnico no encontrado",
+      });
     }
 
     const ordenExiste = await prisma.orden.findUnique({
       where: { id_order: ordenId },
     });
     if (!ordenExiste) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Orden no encontrada" });
+      return res.status(404).json({
+        success: false,
+        message: "Orden no encontrada",
+      });
     }
 
     const rep = await prisma.reparacion.create({
@@ -180,11 +196,11 @@ export const crearReparacion = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: "Reparacion creada correctamente",
+      message: "Reparación creada correctamente",
       data: rep,
     });
   } catch (error) {
-    console.error("Error al crear la reparacion: ", error);
+    console.error("Error al crear la reparación:", error);
     return res.status(500).json({
       success: false,
       message: "Error en el servidor",
