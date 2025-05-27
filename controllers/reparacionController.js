@@ -210,7 +210,9 @@ export const crearReparacion = async (req, res) => {
 
 export const actualizarEstadoReparacion = async (req, res) => {
   try {
-    const { id, estado } = req.params;
+    const { id } = req.params;
+    const { estado } = req.body;
+    console.log("Estado recibido:", estado);
 
     const reparacionExistente = await prisma.reparacion.findUnique({
       where: {
@@ -232,7 +234,7 @@ export const actualizarEstadoReparacion = async (req, res) => {
       });
     }
 
-    const ESTADOS_VALIDOS = ["EN_PROCESO", "TERMINADO", "CANCELADO"];
+    const ESTADOS_VALIDOS = ["EN_PROCESO", "ESPERANDO_REPUESTO", "TERMINADO", "ENTREGADO"];
     if (!ESTADOS_VALIDOS.includes(estado)) {
       return res.status(400).json({
         success: false,
