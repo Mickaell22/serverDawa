@@ -208,6 +208,19 @@ export const crearReparacion = async (req, res) => {
   }
 };
 
+export const eliminarReparacion = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const reparacion = await prisma.reparacion.delete({
+      where: { id: parseInt(id) }
+    });
+    res.json({ success: true, data: reparacion });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error al eliminar reparación' });
+  }
+};
+
+
 export const actualizarEstadoReparacion = async (req, res) => {
   try {
     const { id } = req.params;

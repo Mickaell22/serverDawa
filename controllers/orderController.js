@@ -6,7 +6,7 @@ const calcularPrecioTotal = (precio, cantidad) => {
   return parseFloat(precio * cantidad);
 };
 
-// todos las ordenes
+// todas las ordenes
 export const getAllOrders = async (req, res) => {
   try {
     const orders = await prisma.orden.findMany();
