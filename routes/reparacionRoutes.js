@@ -3,7 +3,7 @@ import {actualizarEstadoReparacion, crearReparacion, getRepacionesPorCI, getRepa
 
 //inicio el router
 const repacionesRoutes = new Router();
-
+//Definimos las rutas de reparaciones
 repacionesRoutes.get("/reparaciones", getTodasRepaciones);
 repacionesRoutes.get("/reparaciones/cliente/:ci", getRepacionesPorCI);
 repacionesRoutes.get("/reparaciones/empleado/:id_empleado", getRepacionesPorEmpleadoId);

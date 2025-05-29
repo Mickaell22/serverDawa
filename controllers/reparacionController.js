@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-
+//Obtener todas las reparaciones
 export const getTodasRepaciones = async (req, res) => {
   try {
     const reparaciones = await prisma.reparacion.findMany();
@@ -21,12 +21,12 @@ export const getTodasRepaciones = async (req, res) => {
     });
   }
 };
-
+//Busca las reparaciones por CI
 export const getRepacionesPorCI = async (req, res) => {
   try {
     const { ci } = req.params;
 
-    // Verificar que la cédula tenga 10 caracteres
+    // Verificar que la cédula tenga 10 digitos
     if (ci.length !== 10) {
       return res.status(400).json({
         success: false,
@@ -59,7 +59,7 @@ export const getRepacionesPorCI = async (req, res) => {
     });
   }
 };
-
+//Busca reparaciones por id del tecnico
 export const getRepacionesPorEmpleadoId = async (req, res) => {
   try {
     const { id_empleado } = req.params;
@@ -90,7 +90,7 @@ export const getRepacionesPorEmpleadoId = async (req, res) => {
     });
   }
 };
-
+//Busca reparacion por su Id
 export const getReparacionPorId = async (req, res) => {
   try {
     const { id } = req.params;
